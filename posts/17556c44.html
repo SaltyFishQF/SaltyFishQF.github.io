@@ -85,14 +85,14 @@ function activateLightMode(){
 </li>
 </ol>
 <p>通过GIF可以形象地说明这一运算的过程：</p>
-<p><img alt data-src="/posts/17556c44/卷积.gif" class="lazyload"></p>
+<p><img alt data-src="/posts/17556c44/conv.gif" class="lazyload"></p>
 <p><em>不过，我们这里的卷积和数学上讲的卷积有一些区别。数学上的卷积要多一个把被卷积矩阵旋转180度的操作。</em></p>
 <h3 id="三维卷积"><a href="#三维卷积" class="headerlink" title="三维卷积"></a>三维卷积</h3><p>由于图像有可能是彩色的，因此图像组成的矩阵会变成 <code>宽度</code>x<code>高度</code>x<code>通道数量</code>的三阶矩阵。彩色图片的通道数（num of channels）一般为3。然而，三维而计算方法和二维的计算方法是一样的，只是原本的3x3的卷积核变为3x3x3的而已，求和的时候变成27个数相加，最后结果是一个二阶矩阵。</p>
 <h2 id="为什么卷积能用于视觉领域"><a href="#为什么卷积能用于视觉领域" class="headerlink" title="为什么卷积能用于视觉领域"></a>为什么卷积能用于视觉领域</h2><p>利用卷积运算，计算机可以完成<strong>边缘检测</strong>的任务。假如有矩阵如下：</p>
 <script type="math/tex; mode=display">\left[ \begin{matrix} 0&0&1&1&0&0\\0&0&1&1&0&0\\0&0&1&1&0&0\\0&0&1&1&0&0\\0&0&1&1&0&0\\0&0&1&1&0&0 \end{matrix} \right]</script><p>如果用(1)式中的卷积核，对这张图片做卷积，结果会是这样的：</p>
 <script type="math/tex; mode=display">\left[ \begin{matrix} 10&10&10&0&0&0\\10&10&10&0&0&0\\10&10&10&0&0&0\\10&10&10&0&0&0\\10&10&10&0&0&0\\10&10&10&0&0&0 \end{matrix} \right] * \left[ \begin{matrix}  1 & 0 & -1 \\ 1 & 0 & -1 \\1 & 0 & -1 \end{matrix}\right] = \left[ \begin{matrix} 0&30&30&0\\0&30&30&0\\0&30&30&0\\0&30&30&0\end{matrix}\right]\tag{2}</script><p>如果把他们转化成图片，可以很直观的看到，原图左侧是黑色，右侧为白色；而图像经过卷积以后变成中间一条黑色，两边是白色。这说明了原本黑白交接的边界线被卷积识别出来了。因此，(1)(2)中的卷积核实际上是起到了检测图片垂直边缘的作用。同样地，如果给这个卷积核加上一个90度的旋转变换，可以得到一个水平边缘检测器。不难想象，如果在神经网络中使用卷积运算，网络就可以通过拟合卷积核中的参数来检测不同方向上的边缘。这就是卷积提取图像特征的方式。</p>
 <p>事实上，卷积神经网络在一个卷积层中会使用多个卷积核。每一个卷积核进行卷积运算都会得到一个二阶矩阵，这个矩阵我们把他叫做<strong>feature map</strong>(特征图)。使用n个卷积核就会形成n个feature map。最后我们会把这些feature map“叠”在一起，进入下一层计算，下一层的输入通道数即为n。</p>
-<p><img alt data-src="/posts/17556c44/边缘检测.jpg" class="lazyload"></p>
+<p><img alt data-src="/posts/17556c44/edge_detect.jpg" class="lazyload"></p>
 <h2 id="卷积运算的常用参数"><a href="#卷积运算的常用参数" class="headerlink" title="卷积运算的常用参数"></a>卷积运算的常用参数</h2><h3 id="卷积核大小"><a href="#卷积核大小" class="headerlink" title="卷积核大小"></a>卷积核大小</h3><p>卷积核大小，顾名思义，就是卷积核矩阵的维度。通常为奇数，常见的取值有3x3，5x5和7x7。现在一般认为小卷积核的效果比较好。一个7x7的卷积，其实可以用两个3x3卷积来代替。</p>
 <h3 id="Padding和Stride"><a href="#Padding和Stride" class="headerlink" title="Padding和Stride"></a>Padding和Stride</h3><p>padding（填充的层数）: 我们从(1)的例子中可以看到，做完卷积运算以后，图片变小了（从6x6变成了4x4）。这不利于进一步提取图像特征。因此，我们可以使用padding来填充图像外围区域，比如填0，来把原图变大，这样可以保证卷积后图片的大小。</p>
 <p>stride（步长）：指的是在“滑动窗口”的过程中，每次滑动的步长。你可以对横向和纵向分别设置。</p>
