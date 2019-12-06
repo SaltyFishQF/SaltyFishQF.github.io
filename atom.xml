@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>忍把浮名,换了浅斟低唱</title>
+  
+  <subtitle>SaltyFishQF</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://saltyfishqf.github.io/"/>
+  <updated>2019-12-06T03:11:54.829Z</updated>
+  <id>http://saltyfishqf.github.io/</id>
+  
+  <author>
+    <name>QF</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>深度学习之卷积神经网络</title>
+    <link href="http://saltyfishqf.github.io/posts/17556c44/"/>
+    <id>http://saltyfishqf.github.io/posts/17556c44/</id>
+    <published>2019-12-05T09:01:49.000Z</published>
+    <updated>2019-12-06T03:11:54.829Z</updated>
+    
+    <content type="html"><![CDATA[<p>卷积神经网络在计算机视觉领域取得了巨大的成功，甚至在音频处理等其他领域，卷积神经网络也能发挥较好的效果。那么，卷积到底是怎么样的一种运算呢？为什么卷积神经网络在图像处理上会有这么大的优势呢？让我们一起深入研究卷积神经网络的原理，学习卷积神经网络，能让你处理远比MNIST数据集复杂的图片，开启视觉计算的新领域。</p><h2 id="什么是卷积？"><a href="#什么是卷积？" class="headerlink" title="什么是卷积？"></a>什么是卷积？</h2><h3 id="二维卷积"><a href="#二维卷积" class="headerlink" title="二维卷积"></a>二维卷积</h3><p>卷积（convolution），其实就是一种数学运算。让我们来看一下面的这个卷积运算的例子：</p><script type="math/tex; mode=display">\left[ \begin{matrix}   1 & 2 & 3 & 1 & 2 & 3  \\   4 & 5 & 6 & 4 & 5 & 6  \\   7 & 8 & 9 &7 & 8 & 9 \\ 1 & 2 & 3 & 1 & 2 & 3 \\   4 & 5 & 6 & 4 & 5 & 6  \\   7 & 8 & 9 &7 & 8 & 9 \end{matrix}  \right] * \left[ \begin{matrix}  1 & 0 & -1 \\ 1 & 0 & -1 \\1 & 0 & -1 \end{matrix}\right] = \left[ \begin{matrix} -6 &3&3&-6\\-6 &3&3&-6\\-6 &3&3&-6\\-6 &3&3&-6\end{matrix}\right] \tag{1}</script><p>事实上，卷积是一种非常简单的运算，与矩阵乘法不同的是，他对矩阵维度要求不是很高，允许不同大小的矩阵进行运算。为了方便说明，我们首先定义一下几个说法。</p><ul><li><p>(1)式中卷积符号左侧的6x6矩阵叫<strong>被卷积矩阵</strong></p></li><li><p>(1)式中卷积符号右侧的3x3矩阵叫做<strong>卷积核</strong></p></li></ul><p>卷积运算的步骤如下：  </p><ol><li><p>把卷积核“覆盖”到被卷积矩阵左上角的位置，将对应元素相乘并相加，作为结果矩阵中的左上角元素。（1）式中的运算过程如下：</p><script type="math/tex; mode=display">1\times1+0\times2+(-1)\times3+1\times4+0\times5+(-1)\times6+1\times7+0\times8+(-1)\times9=-6</script></li><li><p>把卷积核右移一格，重复进行1操作。如果到行尾，则换行继续，直到“覆盖”到右下角元素为止（这一步有点像滑动窗口）。</p></li></ol><p>通过GIF可以形象地说明这一运算的过程：</p><p><img alt data-src="/posts/17556c44/conv.gif" class="lazyload"></p><p><em>不过，我们这里的卷积和数学上讲的卷积有一些区别。数学上的卷积要多一个把被卷积矩阵旋转180度的操作。</em></p><h3 id="三维卷积"><a href="#三维卷积" class="headerlink" title="三维卷积"></a>三维卷积</h3><p>由于图像有可能是彩色的，因此图像组成的矩阵会变成 <code>宽度</code>x<code>高度</code>x<code>通道数量</code>的三阶矩阵。彩色图片的通道数（num of channels）一般为3。然而，三维而计算方法和二维的计算方法是一样的，只是原本的3x3的卷积核变为3x3x3的而已，求和的时候变成27个数相加，最后结果是一个二阶矩阵。</p><h2 id="为什么卷积能用于视觉领域"><a href="#为什么卷积能用于视觉领域" class="headerlink" title="为什么卷积能用于视觉领域"></a>为什么卷积能用于视觉领域</h2><p>利用卷积运算，计算机可以完成<strong>边缘检测</strong>的任务。假如有矩阵如下：</p><script type="math/tex; mode=display">\left[ \begin{matrix} 0&0&1&1&0&0\\0&0&1&1&0&0\\0&0&1&1&0&0\\0&0&1&1&0&0\\0&0&1&1&0&0\\0&0&1&1&0&0 \end{matrix} \right]</script><p>如果用(1)式中的卷积核，对这张图片做卷积，结果会是这样的：</p><script type="math/tex; mode=display">\left[ \begin{matrix} 10&10&10&0&0&0\\10&10&10&0&0&0\\10&10&10&0&0&0\\10&10&10&0&0&0\\10&10&10&0&0&0\\10&10&10&0&0&0 \end{matrix} \right] * \left[ \begin{matrix}  1 & 0 & -1 \\ 1 & 0 & -1 \\1 & 0 & -1 \end{matrix}\right] = \left[ \begin{matrix} 0&30&30&0\\0&30&30&0\\0&30&30&0\\0&30&30&0\end{matrix}\right]\tag{2}</script><p>如果把他们转化成图片，可以很直观的看到，原图左侧是黑色，右侧为白色；而图像经过卷积以后变成中间一条黑色，两边是白色。这说明了原本黑白交接的边界线被卷积识别出来了。因此，(1)(2)中的卷积核实际上是起到了检测图片垂直边缘的作用。同样地，如果给这个卷积核加上一个90度的旋转变换，可以得到一个水平边缘检测器。不难想象，如果在神经网络中使用卷积运算，网络就可以通过拟合卷积核中的参数来检测不同方向上的边缘。这就是卷积提取图像特征的方式。</p><p>事实上，卷积神经网络在一个卷积层中会使用多个卷积核。每一个卷积核进行卷积运算都会得到一个二阶矩阵，这个矩阵我们把他叫做<strong>feature map</strong>(特征图)。使用n个卷积核就会形成n个feature map。最后我们会把这些feature map“叠”在一起，进入下一层计算，下一层的输入通道数即为n。</p><p><img alt data-src="/posts/17556c44/edge_detect.jpg" class="lazyload"></p><h2 id="卷积运算的常用参数"><a href="#卷积运算的常用参数" class="headerlink" title="卷积运算的常用参数"></a>卷积运算的常用参数</h2><h3 id="卷积核大小"><a href="#卷积核大小" class="headerlink" title="卷积核大小"></a>卷积核大小</h3><p>卷积核大小，顾名思义，就是卷积核矩阵的维度。通常为奇数，常见的取值有3x3，5x5和7x7。现在一般认为小卷积核的效果比较好。一个7x7的卷积，其实可以用两个3x3卷积来代替。</p><h3 id="Padding和Stride"><a href="#Padding和Stride" class="headerlink" title="Padding和Stride"></a>Padding和Stride</h3><p>padding（填充的层数）: 我们从(1)的例子中可以看到，做完卷积运算以后，图片变小了（从6x6变成了4x4）。这不利于进一步提取图像特征。因此，我们可以使用padding来填充图像外围区域，比如填0，来把原图变大，这样可以保证卷积后图片的大小。</p><p>stride（步长）：指的是在“滑动窗口”的过程中，每次滑动的步长。你可以对横向和纵向分别设置。</p><h2 id="卷积的好伙伴——池化（Pooling）"><a href="#卷积的好伙伴——池化（Pooling）" class="headerlink" title="卷积的好伙伴——池化（Pooling）"></a>卷积的好伙伴——池化（Pooling）</h2><p>观察(2)中的卷积结果，可以发现用卷积做边缘检测时，边界线被“弄粗”了。这个时候我们可以用池化来解决这个问题。池化也是一种非常简单的数学运算，我们还是先来看一个例子：</p><script type="math/tex; mode=display">\left[ \begin{matrix} 0&0&30&30&0&0\\0&0&30&30&0&0\\0&0&30&30&0&0\\0&0&30&30&0&0\\0&0&30&30&0&0\\0&0&30&30&0&0 \end{matrix} \right]\overset{2\times2MP,s=2}\longrightarrow \left[ \begin{matrix} 0&30&0\\0&30&0\\0&30&0 \end{matrix} \right] \tag{3}</script><p>还是那卷积运算中的滑动窗口的眼光来看，这里用了2x2池化，也就是用2x2的窗口去套原矩阵，并且选择2x2窗口中的最大值，组成新的矩阵。你也可以选择2x2窗口中的平均值，这是两种不同的池化方式，一个叫Max pooling（最大池化），另一个叫Average pooling（平均池化）。我们一般用缩写MP和AP来表示。  </p><p>池化还有一个好处，他可以把feature map缩小，减少运算数量。同时，池化是不需要参数的，也就是不参与训练，不会耗费训练时间。</p><h2 id="卷积神经网络（CNN）"><a href="#卷积神经网络（CNN）" class="headerlink" title="卷积神经网络（CNN）"></a>卷积神经网络（CNN）</h2><p>卷积神经网络由输入层，卷积层和全连接层构成。</p><h3 id="卷积层（Conv）"><a href="#卷积层（Conv）" class="headerlink" title="卷积层（Conv）"></a>卷积层（Conv）</h3><p>卷积层就是把图像对多个卷积核进行卷积，然后再对得到的feature map做池化处理。<strong>一个卷积层通常由卷积+池化组成</strong>（大概是池化没有参数，所有不配单独成池化层233333）。  </p><p>在卷积层中，出了刚刚提到的卷积参数以外，还有一个超参数需要配置，就是卷积核的个数。这个在上文也已有介绍。</p><h3 id="全连接层（FC）"><a href="#全连接层（FC）" class="headerlink" title="全连接层（FC）"></a>全连接层（FC）</h3><p>一个CNN网络通常会包含多个卷积层，然后在后面接一个或者多个全连接层。全连接层实际上就是以前接触过的普通的神经网络中的层。负责把conv层提取到的特征进行归纳计算。</p><h3 id="卷积层的优势"><a href="#卷积层的优势" class="headerlink" title="卷积层的优势"></a>卷积层的优势</h3><ol><li>卷积运算量不大，可以高效提取特征信息。</li><li>池化层可以大大减少运算量，加快训练速度。</li><li>多个卷积层可以把图片中的参数变少，比如128x128x3的图片，经过数轮卷积层以后变成7x7x128的feature map，图片参数从49152减小到6272。</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;卷积神经网络在计算机视觉领域取得了巨大的成功，甚至在音频处理等其他领域，卷积神经网络也能发挥较好的效果。那么，卷积到底是怎么样的一种运算呢？为什么卷积神经网络在图像处理上会有这么大的优势呢？让我们一起深入研究卷积神经网络的原理，学习卷积神经网络，能让你处理远比MNIST数据
+      
+    
+    </summary>
+    
+    
+      <category term="深度学习" scheme="http://saltyfishqf.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="深度学习" scheme="http://saltyfishqf.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="理论" scheme="http://saltyfishqf.github.io/tags/%E7%90%86%E8%AE%BA/"/>
+    
+      <category term="CNN" scheme="http://saltyfishqf.github.io/tags/CNN/"/>
+    
+      <category term="卷积神经网络" scheme="http://saltyfishqf.github.io/tags/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello hexo+Butterfly</title>
+    <link href="http://saltyfishqf.github.io/posts/8ab1f019/"/>
+    <id>http://saltyfishqf.github.io/posts/8ab1f019/</id>
+    <published>2019-12-03T13:23:35.000Z</published>
+    <updated>2019-12-05T13:54:37.331Z</updated>
+    
+    <content type="html"><![CDATA[<p>我原是想自己写一个完整的博客前后端，现在看身边的小伙伴都开始交换友链了，再想想即将到来的期末考试，还有自己拖下的一些项目，还是算了吧。只能这样安慰自己：明明已经有这么多现成的开源项目了，何必重复劳动，手撸轮子。既然是自己的博客，可以多发表发表自己的观点，大概不会像用博客园那样有拘束感。</p><p>第一篇就讲一讲搭建Hexo时遇到的一些问题吧。</p><h2 id="Hexo的安装"><a href="#Hexo的安装" class="headerlink" title="Hexo的安装"></a>Hexo的安装</h2><p>如果是使用Hexo+GitxxPage的话，无需把Hexo安装在服务器上，只要安装在本机上即可。因为到时候使用的是gitxx的服务器，本机直接<code>deploy</code>比较方便。</p><p>首先是安装一些依赖环境，git啦，node啦，这些都不细说。主要是讲用npm装hexo本体的时候的这行命令。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g</span></pre></td></tr></table></figure><p>其中的install在有的教程里面用的是缩写i，这是等价的。后面的 <code>-g</code> 参数意味着全局安装。也就是说在任意目录下，你都可以运行hexo。</p><h3 id="MacOS系统中的问题"><a href="#MacOS系统中的问题" class="headerlink" title="MacOS系统中的问题"></a>MacOS系统中的问题</h3><p>mac通过npm安装的时候可能会报一堆权限错误的问题，即使加了<code>sudo</code>，也有可能造成安装卡住不动的问题。这是由于访问<code>/usr/local</code>目录权限不足造成的，这时候就要使用chown来解决。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">sudo chown R $USER /usr/local</span></pre></td></tr></table></figure><h3 id="Linux系统中的问题"><a href="#Linux系统中的问题" class="headerlink" title="Linux系统中的问题"></a>Linux系统中的问题</h3><p>我装nodejs的时候是直接下载二进制包解压，然后配置软链接的。所以全局安装的包有可能不在环境变量下，还需要再把<code>node/bin</code>放入环境变量中，才能生效。Windows版本可能也有环境变量的问题，需要注意。</p><h2 id="配置SSH密钥连接GitHub账户"><a href="#配置SSH密钥连接GitHub账户" class="headerlink" title="配置SSH密钥连接GitHub账户"></a>配置SSH密钥连接GitHub账户</h2><p>一开始配ssh密钥的时候github一直提示，密钥格式错误，其实是复制错了文件。生成文件的时候他可能会告诉你生成的是<code>~/.ssh/id_rsa</code>，其实要复制的是<code>~/.ssh/id_rsa.pub</code>文件。同时还需要注意的是要使用cat命令而不是vim命令打开文件，用vim复制可能会包含多余的字符。</p><h2 id="Butterfly主题的使用"><a href="#Butterfly主题的使用" class="headerlink" title="Butterfly主题的使用"></a>Butterfly主题的使用</h2><p>跟着官方文档一步一步走就行了。复制配置文件butterfly.yml那一步可能会让人感到困惑。被复制的文件应该是<code>themes/Butterfly/_config.yml</code>，而不是博客文件根目录下的那个配置文件。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;我原是想自己写一个完整的博客前后端，现在看身边的小伙伴都开始交换友链了，再想想即将到来的期末考试，还有自己拖下的一些项目，还是算了吧。只能这样安慰自己：明明已经有这么多现成的开源项目了，何必重复劳动，手撸轮子。既然是自己的博客，可以多发表发表自己的观点，大概不会像用博客园那
+      
+    
+    </summary>
+    
+    
+      <category term="杂谈" scheme="http://saltyfishqf.github.io/categories/%E6%9D%82%E8%B0%88/"/>
+    
+    
+      <category term="Hexo" scheme="http://saltyfishqf.github.io/tags/Hexo/"/>
+    
+      <category term="Butterfly" scheme="http://saltyfishqf.github.io/tags/Butterfly/"/>
+    
+  </entry>
+  
+</feed>
