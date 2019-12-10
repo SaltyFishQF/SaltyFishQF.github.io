@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>忍把浮名,换了浅斟低唱</title>
   
-  <subtitle>SaltyFishQF</subtitle>
+  <subtitle>QF的个人博客</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://saltyfishqf.github.io/"/>
@@ -39,11 +39,11 @@
       <category term="深度学习" scheme="http://saltyfishqf.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
     
     
+      <category term="DenseNet" scheme="http://saltyfishqf.github.io/tags/DenseNet/"/>
+    
       <category term="深度学习" scheme="http://saltyfishqf.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
     
       <category term="理论" scheme="http://saltyfishqf.github.io/tags/%E7%90%86%E8%AE%BA/"/>
-    
-      <category term="DenseNet" scheme="http://saltyfishqf.github.io/tags/DenseNet/"/>
     
       <category term="论文阅读" scheme="http://saltyfishqf.github.io/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"/>
     
