@@ -86,7 +86,7 @@ function activateLightMode(){
 <p>比如利用16K×8位的DRAM芯片，设计64K×8位的DRAM存储器。</p>
 <ol>
 <li>$d = \frac{64K\times 8}{16K\times 8} = 4片$。</li>
-<li>$#A = log_264K=16 \ \ \ \ #D = 8$</li>
+<li>$A = log_264K=16 \ \ \ \ D = 8$</li>
 <li>画图时，连接地址总线时需要注意，$A_{0}-A_{13}$之间总共是直接连在各个芯片上(控制16K种信号)，剩余的$n$路先经过一个$n:2^n$(其中$2^n$必然等于k)译码器分贝连接到各个芯片的片选信号上，这里$n=2$，是2:4译码器。如果只多一路的话，无需使用2:4译码器，用一个非门即可。</li>
 </ol>
 <p><img alt data-src="/posts/b4ebbc17/zkz.jpg" class="lazyload"></p>
