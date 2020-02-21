@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.logan-qiu.cn/"/>
-  <updated>2019-12-22T16:58:32.139Z</updated>
+  <updated>2020-02-21T10:05:48.936Z</updated>
   <id>http://blog.logan-qiu.cn/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android UI控件库初探（RWidgetHelper实现QQ登录界面）</title>
+    <link href="http://blog.logan-qiu.cn/posts/1541cc88/"/>
+    <id>http://blog.logan-qiu.cn/posts/1541cc88/</id>
+    <published>2020-02-21T01:25:41.000Z</published>
+    <updated>2020-02-21T10:05:48.936Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>这几天开始网络授课，**青软安排了安卓直播课。于是给idea加了个android插件，稍微表面配合一下他们。</p></blockquote><p>最近在讲安卓的界面，讲一些布局和控件的使用。老师的需求是模仿QQ登录界面。而QQ最近更新了登录界面布局，变成了简洁扁平风，还挺好康的，就想着仿一仿。由于界面存在不少圆角控件，就想着找一个轮子试试看用轮子。</p><h3 id="UI框架RWidgetHelper"><a href="#UI框架RWidgetHelper" class="headerlink" title="UI框架RWidgetHelper"></a>UI框架RWidgetHelper</h3><p>一开始找到的框架是FancyButtons，可是他只有按钮控件，而且不支持渐变色。后来在fb的issue里面找到了这个RWidgetHelper库，提供了很多控件而且还支持渐变。</p><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>安装要注意的是，在api29下使用的版本和老安卓版本是不兼容的。所以我添加的是AndroidX版本的依赖。如果使用普通版本会出现dex冲突。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">implementation group: 'com.ruffian.library', name: 'RWidgetHelper-AndroidX', version: '0.0.2'</span></pre></td></tr></table></figure><h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><p>由于是第一次使用安卓的控件库，一开始看到README的时候还搞不明白怎么用。后来一番研究，发现只要找出控件库包含的控件，然后根据README文档提供的每种控件的属性来使用即可。</p><p><img alt="RWidgetHelper提供的控件" data-src="/posts/1541cc88/widget.jpg" class="lazyload"></p><p><img alt="部分属性清单" data-src="/posts/1541cc88/document.jpg" class="lazyload"></p><p>以圆角的EditText为例，使用<code>app:corner_radius</code>属性，即可设置圆角。同时要注意的是，此时<code>android:background</code>属性会无效，需要使用<code>app:background_normal</code>属性来设置背景颜色。</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.ruffian.library.widget.REditText</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:layout_width</span>=<span class="string">"300dp"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:layout_height</span>=<span class="string">"50dp"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">app:corner_radius</span>=<span class="string">"40dp"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="tag"></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:id</span>=<span class="string">"@+id/edt_account"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:layout_centerHorizontal</span>=<span class="string">"true"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:layout_below</span>=<span class="string">"@+id/tv_title"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:layout_marginTop</span>=<span class="string">"20dp"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="tag"></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">app:background_normal</span>=<span class="string">"#F3F2F7"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:background</span>=<span class="string">"#F3F2F7"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:paddingLeft</span>=<span class="string">"10dp"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:paddingRight</span>=<span class="string">"10dp"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:textColor</span>=<span class="string">"#000"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"><span class="tag">            <span class="attr">android:textAlignment</span>=<span class="string">"center"</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"><span class="tag">    /&gt;</span></span></pre></td></tr></table></figure><p>这样出来的效果如下：</p><p><img alt="圆角EditText" data-src="/posts/1541cc88/edt.jpg" class="lazyload"></p><p>当然使用控件库，在preview里面显示的预览可能是不准确的，具体效果还是要以虚拟机里展现的为准。</p><p><img alt="效果差别" data-src="/posts/1541cc88/preview.jpg" class="lazyload"></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;这几天开始网络授课，**青软安排了安卓直播课。于是给idea加了个android插件，稍微表面配合一下他们。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;最近在讲安卓的界面，讲一些布局和控件的使用。老师的需求是模仿QQ登录界面。而QQ最近更新了登录界
+      
+    
+    </summary>
+    
+    
+      <category term="Android" scheme="http://blog.logan-qiu.cn/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="http://blog.logan-qiu.cn/tags/Android/"/>
+    
+      <category term="RWidgetHelper" scheme="http://blog.logan-qiu.cn/tags/RWidgetHelper/"/>
+    
+  </entry>
   
   <entry>
     <title>计算机组成原理复习之存储器扩充</title>
